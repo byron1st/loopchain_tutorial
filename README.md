@@ -30,12 +30,12 @@ Docker image들은 크게 3가지로 나뉩니다.
 * loopchain을 사용하기 위해 다음의 Port가 열려야 합니다.
 
 * RadioStation
- - 7102: gRPC port
- - 9002: RESTful port
+  - 7102: gRPC port
+  - 9002: RESTful port
 
 * Peer
- - 7100:gRPC port
- - 9000: RESTful port
+  - 7100:gRPC port
+  - 9000: RESTful port
 
 TIP:동적으로 포트를 다르게 할 수도 있습니다.
 
