@@ -4,15 +4,24 @@
 #           환경변수등록
 ##############################################
 export TAG=latest
-export LOG_FOLDER=$(pwd)/logs
+export LOGS=$(pwd)/logs
+export STORAGE_RS=$(pwd)/storageRS
+export STORAGE_PEER_0=$(pwd)/storage0
 
 ##############################################
 #       로그 및 데이터 디렉토리 생성
 ##############################################
-mkdir ${LOG_FOLDER}
-mkdir -p storageRS
-mkdir -p storage0
+if [ ! -d ${LOGS} ]
+    then    mkdir -p ${LOGS}
+fi
 
+if [ ! -d ${STORAGE_RS} ]
+    then    mkdir -p ${STORAGE_RS}
+fi
+
+if [ ! -d ${STORAGE_PEER_0} ]
+    then    mkdir -p ${STORAGE_PEER_0}
+fi
 
 ##############################################
 #           로그서버실행
@@ -21,7 +30,7 @@ docker run -d \
 --name loop-logger \
 --publish 24224:24224/tcp \
 --volume $(pwd)/fluentd:/fluentd \
---volume ${LOG_FOLDER}:/logs \
+--volume ${LOGS}:/logs \
 loopchain/loopchain-fluentd:${TAG}
 
 ##############################################
