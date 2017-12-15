@@ -220,7 +220,7 @@ $ curl http://localhost:9002/api/v1/peer/list?channel=channel1
 
 ## 실행스크립트
 
-1. 시작 - start.sh (새로운 컨테이너 실행)
+1. 시작 - `start.sh` (새로운 컨테이너 실행)
 
 ```
 #!/usr/bin/env bash
@@ -285,7 +285,7 @@ loopchain/looppeer:${TAG} \
 python3 peer.py -o /conf/peer_conf.json  -r radio_station:7102
 ```
 
-2. 종료 - stop.sh (실행 중인 컨테이너를 종료)
+2. 종료 - `stop.sh` (실행 중인 컨테이너를 종료)
 
 ```
 #!/usr/bin/env bash
@@ -293,7 +293,7 @@ python3 peer.py -o /conf/peer_conf.json  -r radio_station:7102
 docker stop $(docker ps -q --filter name=loop-logger --filter name=radio_station --filter name=peer0)
 ```
 
-3. 삭제 - delete.sh (종료된 컨테이너를 삭제)
+3. 삭제 - `delete.sh` (종료된 컨테이너를 삭제)
 
 ```
 #!/usr/bin/env bash
