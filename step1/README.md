@@ -7,7 +7,7 @@ Local computer에서 RadioStation과 1개의 Peer로 한 장비 위에서 Blockc
 
 RadioStation과 Peer 1개로 구성된 네트워크 환경을 구성하고 테스트합니다. 
 
-![스크린샷 2017-12-15 위치 오전 11.17.01](/Users/wise/Desktop/스크린샷 2017-12-15 위치 오전 11.17.01.png)	
+![구성도](./img/step1_arch.png)
 
 ## Prerequisite
 
