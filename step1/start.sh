@@ -4,7 +4,9 @@
 #           환경변수등록
 ##############################################
 export TAG=latest
+export CONF=$(pwd)/conf
 export LOGS=$(pwd)/logs
+export FLUENTD=$(pwd)/fluentd
 export STORAGE_RS=$(pwd)/storageRS
 export STORAGE_PEER_0=$(pwd)/storage0
 
@@ -29,7 +31,7 @@ fi
 docker run -d \
 --name loop-logger \
 --publish 24224:24224/tcp \
---volume $(pwd)/fluentd:/fluentd \
+--volume ${FLUENTD}:/fluentd \
 --volume ${LOGS}:/logs \
 loopchain/loopchain-fluentd:${TAG}
 
@@ -37,8 +39,8 @@ loopchain/loopchain-fluentd:${TAG}
 #           Radio Station 실행
 ##############################################
 docker run -d --name radio_station \
--v $(pwd)/conf:/conf \
--v $(pwd)/storageRS:/.storage \
+-v ${CONF}:/conf \
+-v ${STORAGE_RS}/storageRS:/.storage \
 -p 7102:7102 \
 -p 9002:9002 \
 --log-driver fluentd --log-opt fluentd-address=localhost:24224 \
@@ -49,8 +51,8 @@ python3 radiostation.py -o /conf/rs_conf.json
 #           Peer0 실행
 ##############################################
 docker run -d --name peer0 \
--v $(pwd)/conf:/conf \
--v $(pwd)/storage0:/.storage \
+-v ${CONF}:/conf \
+-v ${STORAGE_PEER_0}:/.storage \
 --link radio_station:radio_station \
 --log-driver fluentd --log-opt fluentd-address=localhost:24224 \
 -p 7100:7100 -p 9000:9000  \
