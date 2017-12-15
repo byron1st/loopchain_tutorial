@@ -59,9 +59,9 @@ loopchain/loopchain-fluentd   latest              95900cef2721        2 days ago
 
 ```
 $ ./launch_servers.sh
-8fcc955e648740f96fc78eb80ce0af3f5c9b55d8e70df7875c8ed7362fce81bd
-e2d3c8fd02f5fbe1e945f29bab55820137715aa0ea74a288fc610df16ee753e2
-76c6b70b29802a87b63bd741001aca960fe7d7d2fa865811530a1b57a6fede27
+af1e36a376d4f3a5d0d78e20dbd414c4f4d4f7008337298bfa5991dba65a1bd8
+7b963a9437e34b3791fe1cc04d05d2dcbcae305b9ca262cabd960051755a5c47
+a532bedf104b683965c613f2f6d68119fd2073d698180a0248908dbaafdb507e
 ```
 
 
@@ -74,7 +74,7 @@ Radio station에게 channel1에 접속된 Peer들의 정보를 출력해 봅니�
 
 ```json
 $ curl http://localhost:9002/api/v1/peer/list?channel=channel1
-{"response_code": 0, "data": {"registered_peer_count": 2, "connected_peer_count": 2, "registered_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}], "connected_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}]}}
+{"response_code": 0, "data": {"registered_peer_count": 1, "connected_peer_count": 1, "registered_peer_list": [{"order": 1, "peer_id": "cfe71fb6-e139-11e7-b48f-0242ac110004", "group_id": "cfe71fb6-e139-11e7-b48f-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 01:47:13.147460", "status": 1, "peer_type": 1}], "connected_peer_list": [{"order": 1, "peer_id": "cfe71fb6-e139-11e7-b48f-0242ac110004", "group_id": "cfe71fb6-e139-11e7-b48f-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 01:47:13.147460", "status": 1, "peer_type": 1}]}}
 ```
 
 
