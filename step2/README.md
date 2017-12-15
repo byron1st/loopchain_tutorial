@@ -17,32 +17,21 @@ Local computer에서 RadioStation과 2개의 Peer로 한 장비 위에서 Blockc
 
 ## Project Structure
 
-- Before
-  - conf (folder)
-    - channel_manage_data.json
-    - peer_conf0.json
-    - peer_conf1.json
-    - rs_conf.json
-  - fluentd (folder)
-    - etc (folder)
-      - fluent.conf
-  - Launch_servers.sh
-  - stop_server.sh
-- After
-  - conf (folder)
-    - channel_manage_data.json
-    - peer_conf0.json
-    - peer_conf1.json
-    - rs_conf.json
-  - fluentd (folder)
-    - etc (folder)
-      - fluent.conf
-  - Launch_servers.sh
-  - stop_server.sh
-  - logs (folder)
-  - storage0 # peer2
-  - storage1 # peer1 
-  - storageRS # radiostation
+```
+├── README.md
+├── conf
+│   ├── channel_manage_data.json
+│   ├── peer_conf0.json
+│   ├── peer_conf1.json
+│   └── rs_conf.json
+├── fluentd
+│   └── etc
+│       └── fluent.conf
+├── launch_servers.sh
+└── stop_servers.sh
+```
+
+
 
 ## Docker Image 받기
 
@@ -87,6 +76,15 @@ Radio station에게 channel1에 접속된 Peer들의 정보를 출력해 봅니�
 ```json
 $ curl http://localhost:9002/api/v1/peer/list?channel=channel1
 {"response_code": 0, "data": {"registered_peer_count": 2, "connected_peer_count": 2, "registered_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}], "connected_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}]}}
+
+```
+
+
+
+## Docker Container 종료하기
+
+```
+$ ./stop_server.sh
 ```
 
 
