@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
+##############################################
+#           환경변수등록
+##############################################
 export TAG=latest
-
-
-# Make log folder.
 export LOG_FOLDER=$(pwd)/logs
+
+##############################################
+#       로그 및 데이터 디렉토리 생성
+##############################################
 mkdir ${LOG_FOLDER}
+mkdir -p storageRS
+mkdir -p storage0
 
 
-# log server 띄우기.
+##############################################
+#           로그서버실행
+##############################################
 docker run -d \
 --name loop-logger \
 --publish 24224:24224/tcp \
@@ -16,11 +24,9 @@ docker run -d \
 --volume ${LOG_FOLDER}:/logs \
 loopchain/loopchain-fluentd:${TAG}
 
-
-# RadioStation에서 이용할 데이타 저장 공간을 만듭니다.
-mkdir -p storageRS
-
-# RadioStation을 실행합니다.
+##############################################
+#           Radio Station 실행
+##############################################
 docker run -d --name radio_station \
 -v $(pwd)/conf:/conf \
 -v $(pwd)/storageRS:/.storage \
@@ -30,11 +36,9 @@ docker run -d --name radio_station \
 loopchain/looprs:${TAG} \
 python3 radiostation.py -o /conf/rs_conf.json
 
-
-# Peer 0번에서 이용할 데이타 저장 공간을 만듭니다.
-mkdir -p storage0
-
-# Peer 0번을 띄웁니다.
+##############################################
+#           Peer0 실행
+##############################################
 docker run -d --name peer0 \
 -v $(pwd)/conf:/conf \
 -v $(pwd)/storage0:/.storage \
