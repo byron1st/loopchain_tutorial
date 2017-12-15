@@ -83,7 +83,6 @@ $ mkdir   conf
 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
 
 ```
-$ cd conf
 $ touch   channel_manage_data.json
 $ printf   '{"channel1":   {"score_package":   "loopchain/default"}   }   \n'   > channel_manage_data.json
 $ mv channel_manage_data.json ./conf
