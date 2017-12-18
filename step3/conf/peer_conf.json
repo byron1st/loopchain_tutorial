@@ -1,4 +1,4 @@
 {
   "LOOPCHAIN_DEFAULT_CHANNEL" : "channel1",
-  "DEPLOY_SCORE":"{your_own_github_id}/contract_sample"
+  "DEFAULT_SCORE_BRANCH": "master"
 }

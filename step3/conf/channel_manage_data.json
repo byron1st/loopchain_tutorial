@@ -1,6 +1,6 @@
 {
   "channel1":
     {
-      "score_package": "jinhoyoo/contract_sample"
-    } 
+      "score_package": "{your_github_id}/contract_sample"
+    }
 }

@@ -32,6 +32,8 @@ docker run -d --name radio_station \
 loopchain/looprs:${TAG} \
 python3 radiostation.py -o /conf/rs_conf.json
 
+# SCORE용 폴더만들기
+mkdir -p score
 
 # Peer 0번에서 이용할 데이타 저장 공간을 만듭니다.
 mkdir -p storage0
@@ -41,10 +43,10 @@ docker run -d --name peer0 \
 -v $(pwd)/conf:/conf \
 -v $(pwd)/storage0:/.storage \
 -v $(pwd)/score:/score \
--v "${SSH_KEY_FOLDER}:/root/.ssh/id_rsa \
+-v ${SSH_KEY_FOLDER}:/root/.ssh/id_rsa \
 -e "DEFAULT_SCORE_HOST=github.com" \
 --link radio_station:radio_station \
 --log-driver fluentd --log-opt fluentd-address=localhost:24224 \
--p 7100:7100 -p 9000:9000  \
+-p 7100:7100 -p 9000:9000 \
 loopchain/looppeer:${TAG} \
 python3 peer.py -o /conf/peer_conf.json  -r radio_station:7102
