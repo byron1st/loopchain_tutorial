@@ -4,8 +4,7 @@ Local computer에서 SCORE개발 환경 만들기
 
 
 
-1. SCORE 작업 프로젝트 만들기
-------
+## 1. SCORE 작업 프로젝트 만들기
 
  SCORE를 작업하는 프로젝트를 만들고 github에 만듭니다. [기본 예제](https://github.com/theloopkr/loopchain/tree/master/score/sample-test_score)에서 보이듯 두개의 파일로 구성됩니다.
 
@@ -15,8 +14,7 @@ Local computer에서 SCORE개발 환경 만들기
 To-Do: 추가
 
 
-2. 만든 SCORE 프로젝트 연결하기
------
+## 2. 만든 SCORE 프로젝트 연결하기
 
 ### 2.1 SSH key만들고 Github에 등록하기
  1. Github에서 [Contract sample](https://github.com/theloopkr/contract_sample)Project를 Fork.
@@ -50,8 +48,7 @@ docker run -d --name peer0 \
   python3 peer.py -o /conf/peer_conf.json  -r radio_station:7102
 ````
 
-3. 확인하기
-------
+## 3. 확인하기
 
 ### 3.1 서버들 상태 확인
 ```
@@ -80,5 +77,5 @@ curl -H "Content-Type: application/json" -X POST -d '{"jsonrpc":"2.0","method":"
 curl http://localhost:9000/api/v1/transactions/result?hash=${HASH값} | python -m json.tool
 ```
 
-4. 요약하기
-------
+## 4. 요약하기
+
