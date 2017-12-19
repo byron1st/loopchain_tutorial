@@ -16,8 +16,6 @@ Local computer에서 RadioStation과 2개의 Peer로 한 장비 위에서 Blockc
 ## Prerequisite
 
 - [공통사항](https://github.com/theloopkr/loopchain_tutorial/blob/master/README.md)
-- Docker >= 1.7
-
 
 
 ## 프로젝트 구성
@@ -51,7 +49,7 @@ $ export TAG=latest
 
 ## 설정 파일 생성
 
-1. Log서버 (fluentd)의 설정파일(fluent.conf) 및 로그 디렉토리 생성
+### 1. Log서버 (fluentd)의 설정파일(fluent.conf) 및 로그 디렉토리 생성
 
 ```
 $ mkdir -p fluentd/etc
@@ -78,13 +76,13 @@ $ vi fluent.conf
 $ mv fluent.conf ./fluentd/etc
 ```
 
-2. 환경설정 디렉토리 생성
+### 2. 환경설정 디렉토리 생성
 
 ```
 $ mkdir   conf
 ```
 
-3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
+### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
 
 ```
 $ touch   channel_manage_data.json
@@ -92,14 +90,14 @@ $ printf   '{"channel1":   {"score_package":   "loopchain/default"}   }   \n'   
 $ mv channel_manage_data.json ./conf
 ```
 
-4. RadioStation의 설정파일 생성(rs_conf.json)
+### 4. RadioStation의 설정파일 생성(rs_conf.json)
 
 ```
 $ touch   rs_conf.json
 $ printf   '{"CHANNEL_MANAGE_DATA_PATH"   :   "/conf/channel_manage_data.json", "LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","ENABLE_CHANNEL_AUTH":   false}\n'         > $ mv rs_conf.json ./conf
 ```
 
-5. Peer0의 설정파일 생성(peer_conf0.json)
+### 5. Peer0의 설정파일 생성(peer_conf0.json)
 
 ```
 $ touch   peer_conf0.json
@@ -107,7 +105,7 @@ $ printf   '{"LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","DEFAULT_SCORE_BRANCH"
 $ mv peer_conf0.json ./conf
 ```
 
-6. Peer1의 설정파일 생성(peer_conf1.json)
+### 6. Peer1의 설정파일 생성(peer_conf1.json)
 
 ```
 $ touch   peer_conf1.json
@@ -137,7 +135,7 @@ loopchain/loopchain-fluentd   latest              95900cef2721        2 days ago
 
 ## Docker container 실행
 
-1. log서버 실행
+### 1. log서버 실행
 
 ```
 # 컨테이너실행
@@ -154,7 +152,7 @@ CONTAINER ID        IMAGE                                COMMAND                
 2ce034c6a0c9        loopchain/loopchain-fluentd:latest   "/bin/entrypoint.s..."   42 minutes ago      Up 42 minutes       5140/tcp, 24284/tcp, 0.0.0.0:24224->24224/tcp   loop-logger
 ```
 
-2. RadioStation 실행
+### 2. RadioStation 실행
 
 ```
 # 데이터 저장소 생성
@@ -175,7 +173,7 @@ CONTAINER ID        IMAGE                     COMMAND                  CREATED  
 66038e146dbb        loopchain/looprs:latest   "python3 radiostat..."   41 minutes ago      Up 41 minutes       0.0.0.0:7102->7102/tcp, 7100-7101/tcp, 0.0.0.0:9002->9002/tcp   radio_station
 ```
 
-3. Peer0 실행
+### 3. Peer0 실행
 
 ```
 # 데이터 저장소 생성
@@ -197,7 +195,7 @@ CONTAINER ID        IMAGE                       COMMAND                  CREATED
 2d44c7f5c7c7        loopchain/looppeer:latest   "python3 peer.py -..."   40 minutes ago      Up 40 minutes       0.0.0.0:7100->7100/tcp, 0.0.0.0:9000->9000/tcp, 7101-7102/tcp   peer0
 ```
 
-4. Peer1 실행
+### 4. Peer1 실행
 
 ```
 # 데이터 저장소 생성
@@ -223,7 +221,7 @@ CONTAINER ID        IMAGE                       COMMAND                  CREATED
 
 ## 테스트
 
-1. Peer 상태 조회
+### 1. Peer 상태 조회
 
 ```json
 $ curl http://localhost:9000/api/v1/peer/list?channel=channel1
@@ -231,7 +229,7 @@ $ curl http://localhost:9000/api/v1/peer/list?channel=channel1
 
 ```
 
-2. RadioStation channel1 등록된 Peer 목록 조회
+### 2. RadioStation channel1 등록된 Peer 목록 조회
 
 ```
 $   curl    http://localhost:9002/api/v1/peer/list?channel=channel1
@@ -242,7 +240,7 @@ $   curl    http://localhost:9002/api/v1/peer/list?channel=channel1
 
 ## 실행스크립트
 
-1. 시작 - start.sh (새로운 컨테이너 실행)
+### 1. 시작 - `start.sh` (새로운 컨테이너 실행)
 
 ```
 #!/usr/bin/env bash
@@ -319,7 +317,7 @@ loopchain/looppeer:${TAG} \
 python3 peer.py -o /conf/peer_conf1.json -p 7200 -r radio_station:7102
 ```
 
-2. 종료 - stop.sh (실행 중인 컨테이너를 종료)
+### 2. 종료 - `stop.sh` (실행 중인 컨테이너를 종료)
 
 ```
 #!/usr/bin/env bash
@@ -327,7 +325,7 @@ python3 peer.py -o /conf/peer_conf1.json -p 7200 -r radio_station:7102
 docker stop $(docker ps -q --filter name=loop-logger --filter name=radio_station --filter name=peer0 --filter name=peer1)
 ```
 
-3. 삭제 - delete.sh (종료된 컨테이너를 삭제)
+### 3. 삭제 - `delete.sh` (종료된 컨테이너를 삭제)
 
 ```
 #!/usr/bin/env bash

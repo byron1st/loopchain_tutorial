@@ -12,8 +12,6 @@ RadioStation과 Peer 1개로 구성된 네트워크 환경을 구성하고 테�
 ## Prerequisite
 
 - [공통사항](https://github.com/theloopkr/loopchain_tutorial/blob/master/README.md)
-- Docker >= 1.7
-
 
 
 ## 프로젝트구성
