@@ -234,7 +234,7 @@ CONTAINER ID        IMAGE                       COMMAND                  CREATED
 
 ### 1. Peer 상태 조회
 
-```json
+```
 $ curl http://localhost:9000/api/v1/peer/list?channel=channel1
 {"made_block_count": 0, "status": "Service is online: 1", "peer_type": "1", "audience_count": "0", "consensus": "siever", "peer_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "block_height": 0, "total_tx": 0, "peer_target": "172.17.0.4:7100", "leader_complaint": 1}
 
