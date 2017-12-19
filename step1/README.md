@@ -44,7 +44,7 @@ $ export TAG=latest
 
 ## 설정파일생성
 
-### 1. Log서버 (fluentd)의 설정파일(fluent.conf) 및 로그 디렉토리 생성
+### 1. Log서버 (fluentd)의 설정파일(`fluent.conf`) 및 로그 디렉토리 생성
 
 ```
 $ mkdir -p fluentd/etc
@@ -74,9 +74,13 @@ $ vi fluent.conf
 		utc
 	</store>
 </match>
+```
+작성된 `fluent.conf`를 `fluentd/etc` 디렉토리로 이동
 
+```
 $ mv fluent.conf ./fluentd/etc
 ```
+
 
 ### 2. 환경설정 디렉토리 생성
 
@@ -84,7 +88,7 @@ $ mv fluent.conf ./fluentd/etc
 $ mkdir conf
 ```
 
-### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
+### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(`channel_manager_data.json`)
 
 ```
 $ touch channel_manage_data.json
@@ -92,7 +96,7 @@ $ printf '{"channel1": {"score_package": "loopchain/default"} } \n' > channel_ma
 $ mv channel_manage_data.json ./conf
 ```
 
-### 4. RadioStation의 설정파일 생성(rs_conf.json)
+### 4. RadioStation의 설정파일 생성(`rs_conf.json`)
 
 ```
 $ touch rs_conf.json
@@ -100,7 +104,7 @@ $ printf '{"CHANNEL_MANAGE_DATA_PATH": "/conf/channel_manage_data.json", "LOOPCH
 $ mv rs_conf.json ./conf
 ```
 
-### 5. Peer의 설정파일 생성(peer_conf.json)
+### 5. Peer의 설정파일 생성(`peer_conf.json`)
 
 ```
 $ touch peer_conf.json
@@ -206,7 +210,7 @@ $ curl http://localhost:9000/api/v1/status/peer?channel=channel1
 }
 ```
 
-### 2. RadioStation channel1 등록된 Peer 목록 조회
+### 2. RadioStation의 `channel1`에 등록된 Peer 목록 조회
 
 ```
 $ curl http://localhost:9002/api/v1/peer/list?channel=channel1
