@@ -1,3 +1,5 @@
+
+
 Local computer에서 RadioStation과 2개의 Peer로 한 장비 위에서 Blockchain network 구성하기
 ==================
 
@@ -5,17 +7,20 @@ Local computer에서 RadioStation과 2개의 Peer로 한 장비 위에서 Blockc
 
 ## 목적
 
-이번 과정은 RadioStation과 Peer 2개로 구성된 네트워크를 올리는 것 입니다. 9002, 9000, 9100은 Restful로 연결할 수 있는 Interface를 만들기 위해 열리는 Port입니다.
+ RadioStation과 Peer 2개로 구성된 네트워크 환경을 구성하고 테스트합니다.
+
+![step2_arch](./img/step2_arch.png)
 
 
 
 ## Prerequisite
 
+- [공통사항](https://github.com/theloopkr/loopchain_tutorial/blob/master/README.md)
 - Docker >= 1.7
 
 
 
-## Project Structure
+## 프로젝트 구성
 
 ```
 ├── README.md
@@ -24,28 +29,103 @@ Local computer에서 RadioStation과 2개의 Peer로 한 장비 위에서 Blockc
 │   ├── peer_conf0.json
 │   ├── peer_conf1.json
 │   └── rs_conf.json
+├── delete.sh
 ├── fluentd
 │   └── etc
 │       └── fluent.conf
-├── launch_servers.sh
-└── stop_servers.sh
+├── img
+│   └── step2_arch.png
+├── start.sh
+└── stop.sh
 ```
 
 
 
-## Docker Image 받기
+## 환경변수등록
+
+```
+$ export TAG=latest
+```
+
+
+
+## 설정 파일 생성
+
+1. Log서버 (fluentd)의 설정파일(fluent.conf) 및 로그 디렉토리 생성
+
+```
+$ mkdir -p fluentd/etc
+$ mkdir logs
+$ vi fluent.conf
+
+다음 내용 작성을 작성합니다.
+<source>
+      @type      forward       @id            input1
+      port      24224
+      bind   0.0.0.0 </source>
+<match   **>   #   Add   your   log   tag   to   show   in   <>.       @type   copy
+                   
+    <store>   #   Add   your   log   tag   to   show   in   <>.           @type   file   #   Leave   log   file   in   path.
+          path                              /logs/data.*.log
+          symlink_path      /logs/data.log
+          time_slice_format   %Y%m%d
+          time_slice_wait         10m
+          time_format                     %Y%m%dT%H%M%S%z           compress   gzip
+          utc
+    </store>
+</match>
+
+$ mv fluent.conf ./fluentd/etc
+```
+
+2. 환경설정 디렉토리 생성
+
+```
+$ mkdir   conf
+```
+
+3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
+
+```
+$ touch   channel_manage_data.json
+$ printf   '{"channel1":   {"score_package":   "loopchain/default"}   }   \n'   > channel_manage_data.json
+$ mv channel_manage_data.json ./conf
+```
+
+4. RadioStation의 설정파일 생성(rs_conf.json)
+
+```
+$ touch   rs_conf.json
+$ printf   '{"CHANNEL_MANAGE_DATA_PATH"   :   "/conf/channel_manage_data.json", "LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","ENABLE_CHANNEL_AUTH":   false}\n'         > $ mv rs_conf.json ./conf
+```
+
+5. Peer0의 설정파일 생성(peer_conf0.json)
+
+```
+$ touch   peer_conf0.json
+$ printf   '{"LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","DEFAULT_SCORE_BRANCH": "master"}\n'   >   peer_conf0.json
+$ mv peer_conf0.json ./conf
+```
+
+6. Peer1의 설정파일 생성(peer_conf1.json)
+
+```
+$ touch   peer_conf1.json
+$ printf   '{"LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","DEFAULT_SCORE_BRANCH": "master"}\n'   >   peer_conf1.json
+$ mv peer_conf1.json ./conf
+```
+
+
+
+## Docker Image 다운로드 및 확인
 
 ```
 $ docker pull loopchain/looprs:latest             # radio station
 $ docker pull loopchain/looppeer:latest.          # peer
 $ docker pull loopchain/loopchain-fluentd:latest  # log server
-```
 
-
-
-## Docker Image확인 하기
-
-```
+...  
+...
 $ docker images
 REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
 loopchain/looppeer            latest              8968af8c1721        2 days ago          783MB
@@ -55,36 +135,204 @@ loopchain/loopchain-fluentd   latest              95900cef2721        2 days ago
 
 
 
-## Docker container 올리기
+## Docker container 실행
+
+1. log서버 실행
 
 ```
-$ ./launch_servers.sh
-8fcc955e648740f96fc78eb80ce0af3f5c9b55d8e70df7875c8ed7362fce81bd
-e2d3c8fd02f5fbe1e945f29bab55820137715aa0ea74a288fc610df16ee753e2
-76c6b70b29802a87b63bd741001aca960fe7d7d2fa865811530a1b57a6fede27
-6cc2f85adadd95c0331f6876c0c6e9f4446f49c2a83fa1a22b6cbdd2e8f1c8d3
+# 컨테이너실행
+$ docker run -d \
+--name loop-logger \
+--publish 24224:24224/tcp \
+--volume $(pwd)/fluentd:/fluentd \
+--volume $(pwd)/logs:/logs \
+loopchain/loopchain-fluentd:${TAG}
+
+#컨테이너조회
+$ docker ps --filter name=loop-logger
+CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS              PORTS                                           NAMES
+2ce034c6a0c9        loopchain/loopchain-fluentd:latest   "/bin/entrypoint.s..."   42 minutes ago      Up 42 minutes       5140/tcp, 24284/tcp, 0.0.0.0:24224->24224/tcp   loop-logger
+```
+
+2. RadioStation 실행
+
+```
+# 데이터 저장소 생성
+$ mkdir -p storageRS
+# 컨테이너실행
+$ docker run -d --name radio_station \
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storageRS:/.storage \
+-p 7102:7102 \
+-p 9002:9002 \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+loopchain/looprs:${TAG} \
+python3 radiostation.py -o /conf/rs_conf.json
+
+# 컨테이너조회
+$ docker ps --filter name=radio_station
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                                                           NAMES
+66038e146dbb        loopchain/looprs:latest   "python3 radiostat..."   41 minutes ago      Up 41 minutes       0.0.0.0:7102->7102/tcp, 7100-7101/tcp, 0.0.0.0:9002->9002/tcp   radio_station
+```
+
+3. Peer0 실행
+
+```
+# 데이터 저장소 생성
+$ mkdir -p storage0
+
+# 컨테이너 실행
+$ docker run -d --name peer0 \
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storage0:/.storage \
+--link radio_station:radio_station \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+-p 7100:7100 -p 9000:9000  \
+loopchain/looppeer:${TAG} \
+python3 peer.py -o /conf/peer_conf0.json -p 7100 -r radio_station:7102
+
+# 컨테이너 조회
+$ docker ps --filter name=peer0
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                           NAMES
+2d44c7f5c7c7        loopchain/looppeer:latest   "python3 peer.py -..."   40 minutes ago      Up 40 minutes       0.0.0.0:7100->7100/tcp, 0.0.0.0:9000->9000/tcp, 7101-7102/tcp   peer0
+```
+
+4. Peer1 실행
+
+```
+# 데이터 저장소 생성
+$ mkdir -p storage1
+
+# 컨테이너 실행
+$ docker run -d --name peer1 \
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storage0:/.storage \
+--link radio_station:radio_station \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+-p 7200:7200 -p 9100:9100  \
+loopchain/looppeer:${TAG} \
+python3 peer.py -o /conf/peer_conf1.json -p 7200 -r radio_station:7102
+
+# 컨테이너 조회
+$ docker ps --filter name=peer1
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                                     NAMES
+67f9144930b3        loopchain/looppeer:latest   "python3 peer.py -..."   10 seconds ago      Up 9 seconds        7100-7102/tcp, 0.0.0.0:7200->7200/tcp, 9000/tcp, 0.0.0.0:9100->9100/tcp   peer1
 ```
 
 
 
-## 확인하기
+## 테스트
 
-Radio station에게 channel1에 접속된 Peer들의 정보를 출력해 봅니다.
-
-실행 후 peer가 channel1에 접속하는데 몇 분이상 시간이 소요될 수 있습니다.
+1. Peer 상태 조회
 
 ```json
-$ curl http://localhost:9002/api/v1/peer/list?channel=channel1
-{"response_code": 0, "data": {"registered_peer_count": 2, "connected_peer_count": 2, "registered_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}], "connected_peer_list": [{"order": 1, "peer_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "group_id": "35eae1bc-e130-11e7-97d3-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.403738", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "590118e2-e130-11e7-9845-0242ac110005", "group_id": "590118e2-e130-11e7-9845-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-15 00:39:24.880252", "status": 1, "peer_type": 0}]}}
+$ curl http://localhost:9000/api/v1/peer/list?channel=channel1
+{"made_block_count": 0, "status": "Service is online: 1", "peer_type": "1", "audience_count": "0", "consensus": "siever", "peer_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "block_height": 0, "total_tx": 0, "peer_target": "172.17.0.4:7100", "leader_complaint": 1}
 
+```
+
+2. RadioStation channel1 등록된 Peer 목록 조회
+
+```
+$   curl    http://localhost:9002/api/v1/peer/list?channel=channel1
+{"response_code": 0, "data": {"registered_peer_count": 2, "connected_peer_count": 2, "registered_peer_list": [{"order": 1, "peer_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "group_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-18 08:10:32.290231", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "dde94092-e3ca-11e7-b730-0242ac110005", "group_id": "dde94092-e3ca-11e7-b730-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-18 08:10:32.695747", "status": 1, "peer_type": 0}], "connected_peer_list": [{"order": 1, "peer_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "group_id": "dda42a52-e3ca-11e7-a336-0242ac110004", "target": "172.17.0.4:7100", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-18 08:10:32.290231", "status": 1, "peer_type": 1}, {"order": 2, "peer_id": "dde94092-e3ca-11e7-b730-0242ac110005", "group_id": "dde94092-e3ca-11e7-b730-0242ac110005", "target": "172.17.0.5:7200", "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==", "status_update_time": "2017-12-18 08:10:32.695747", "status": 1, "peer_type": 0}]}}
 ```
 
 
 
-## Docker Container 종료하기
+## 실행스크립트
+
+1. 시작 - start.sh (새로운 컨테이너 실행)
 
 ```
-$ ./stop_server.sh
+#!/usr/bin/env bash
+
+##############################################
+#           환경변수등록
+##############################################
+export TAG=latest
+export CONF=$(pwd)/conf
+export LOGS=$(pwd)/logs
+export FLUENTD=$(pwd)/fluentd
+export STORAGE_RS=$(pwd)/storageRS
+export STORAGE_PEER_0=$(pwd)/storage0
+
+##############################################
+#       로그 및 데이터 디렉토리 생성
+##############################################
+if [ ! -d ${LOGS} ]
+    then    mkdir -p ${LOGS}
+fi
+
+if [ ! -d ${STORAGE_RS} ]
+    then    mkdir -p ${STORAGE_RS}
+fi
+
+if [ ! -d ${STORAGE_PEER_0} ]
+    then    mkdir -p ${STORAGE_PEER_0}
+fi
+
+##############################################
+#           로그서버실행
+##############################################
+docker run -d \
+--name loop-logger \
+--publish 24224:24224/tcp \
+--volume ${FLUENTD}:/fluentd \
+--volume ${LOGS}:/logs \
+loopchain/loopchain-fluentd:${TAG}
+
+##############################################
+#           Radio Station 실행
+##############################################
+docker run -d --name radio_station \
+-v ${CONF}:/conf \
+-v ${STORAGE_RS}/storageRS:/.storage \
+-p 7102:7102 \
+-p 9002:9002 \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+loopchain/looprs:${TAG} \
+python3 radiostation.py -o /conf/rs_conf.json
+
+##############################################
+#           Peer0 실행
+##############################################
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storage0:/.storage \
+--link radio_station:radio_station \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+-p 7100:7100 -p 9000:9000  \
+loopchain/looppeer:${TAG} \
+python3 peer.py -o /conf/peer_conf0.json -p 7100 -r radio_station:7102
+
+
+##############################################
+#           Peer1 실행
+##############################################
+docker run -d --name peer1 \
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storage0:/.storage \
+--link radio_station:radio_station \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+-p 7200:7200 -p 9100:9100  \
+loopchain/looppeer:${TAG} \
+python3 peer.py -o /conf/peer_conf1.json -p 7200 -r radio_station:7102
+```
+
+2. 종료 - stop.sh (실행 중인 컨테이너를 종료)
+
+```
+#!/usr/bin/env bash
+
+docker stop $(docker ps -q --filter name=loop-logger --filter name=radio_station --filter name=peer0 --filter name=peer1)
+```
+
+3. 삭제 - delete.sh (종료된 컨테이너를 삭제)
+
+```
+#!/usr/bin/env bash
+
+docker rm -f $(docker ps -aq --filter name=loop-logger --filter name=radio_station --filter name=peer0 --filter name=peer1)
 ```
 
 
