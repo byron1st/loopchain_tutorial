@@ -27,9 +27,6 @@ RadioStation과 Peer 1개로 구성된 네트워크 환경을 구성하고 테�
 ├── fluentd
 │   └── etc
 │       └── fluent.conf
-├── logs
-├── storage0
-├── storageRS
 ├── start.sh
 ├── stop.sh
 └── delete.sh
