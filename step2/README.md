@@ -49,30 +49,40 @@ $ export TAG=latest
 
 ## 설정 파일 생성
 
-### 1. Log서버 (fluentd)의 설정파일(fluent.conf) 및 로그 디렉토리 생성
+### 1. Log서버 (fluentd)의 설정파일(`fluent.conf`) 및 로그 디렉토리 생성
 
 ```
 $ mkdir -p fluentd/etc
 $ mkdir logs
 $ vi fluent.conf
+```
 
 다음 내용 작성을 작성합니다.
+```
 <source>
-      @type      forward       @id            input1
-      port      24224
-      bind   0.0.0.0 </source>
-<match   **>   #   Add   your   log   tag   to   show   in   <>.       @type   copy
-                   
-    <store>   #   Add   your   log   tag   to   show   in   <>.           @type   file   #   Leave   log   file   in   path.
-          path                              /logs/data.*.log
-          symlink_path      /logs/data.log
-          time_slice_format   %Y%m%d
-          time_slice_wait         10m
-          time_format                     %Y%m%dT%H%M%S%z           compress   gzip
-          utc
-    </store>
-</match>
+	@type forward
+	@id input1
+	port 24224
+	bind 0.0.0.0
+</source>
 
+<match **> # Add your log tag to show in <>.
+	@type copy
+	<store> # Add your log tag to show in <>.
+		@type file # Leave log file in path.
+		path /logs/data.*.log
+		symlink_path /logs/data.log
+		time_slice_format %Y%m%d
+		time_slice_wait 10m
+		time_format %Y%m%dT%H%M%S%z
+		compress gzip
+		utc
+	</store>
+</match>
+```
+작성된 `fluent.conf`를 `fluentd/etc` 디렉토리로 이동
+
+```
 $ mv fluent.conf ./fluentd/etc
 ```
 
@@ -82,34 +92,35 @@ $ mv fluent.conf ./fluentd/etc
 $ mkdir   conf
 ```
 
-### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(channel_manager_data.json)
+### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(`channel_manager_data.json`)
 
 ```
-$ touch   channel_manage_data.json
-$ printf   '{"channel1":   {"score_package":   "loopchain/default"}   }   \n'   > channel_manage_data.json
+$ touch channel_manage_data.json
+$ printf '{"channel1": {"score_package": "loopchain/default"} } \n' > channel_manage_data.json
 $ mv channel_manage_data.json ./conf
 ```
 
-### 4. RadioStation의 설정파일 생성(rs_conf.json)
+### 4. RadioStation의 설정파일 생성(`rs_conf.json`)
 
 ```
-$ touch   rs_conf.json
-$ printf   '{"CHANNEL_MANAGE_DATA_PATH"   :   "/conf/channel_manage_data.json", "LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","ENABLE_CHANNEL_AUTH":   false}\n'         > $ mv rs_conf.json ./conf
+$ touch rs_conf.json
+$ printf '{"CHANNEL_MANAGE_DATA_PATH": "/conf/channel_manage_data.json", "LOOPCHAIN_DEFAULT_CHANNEL": "channel1","ENABLE_CHANNEL_AUTH": false}\n' > rs_conf.json
+$ mv rs_conf.json ./conf
 ```
 
-### 5. Peer0의 설정파일 생성(peer_conf0.json)
+### 5. Peer0의 설정파일 생성(`peer_conf0.json`)
 
 ```
-$ touch   peer_conf0.json
-$ printf   '{"LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","DEFAULT_SCORE_BRANCH": "master"}\n'   >   peer_conf0.json
+$ touch peer_conf.json
+$ printf '{"LOOPCHAIN_DEFAULT_CHANNEL": "channel1","DEFAULT_SCORE_BRANCH": "master"}\n' > peer_conf0.json
 $ mv peer_conf0.json ./conf
 ```
 
-### 6. Peer1의 설정파일 생성(peer_conf1.json)
+### 6. Peer1의 설정파일 생성(`peer_conf1.json`)
 
 ```
-$ touch   peer_conf1.json
-$ printf   '{"LOOPCHAIN_DEFAULT_CHANNEL"   :   "channel1","DEFAULT_SCORE_BRANCH": "master"}\n'   >   peer_conf1.json
+$ touch peer_conf.json
+$ printf '{"LOOPCHAIN_DEFAULT_CHANNEL": "channel1","DEFAULT_SCORE_BRANCH": "master"}\n' > peer_conf1.json
 $ mv peer_conf1.json ./conf
 ```
 
@@ -229,7 +240,7 @@ $ curl http://localhost:9000/api/v1/peer/list?channel=channel1
 
 ```
 
-### 2. RadioStation channel1 등록된 Peer 목록 조회
+### 2. RadioStation의 `channel1`에 등록된 Peer 목록 조회
 
 ```
 $   curl    http://localhost:9002/api/v1/peer/list?channel=channel1
