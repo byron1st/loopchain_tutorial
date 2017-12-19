@@ -42,4 +42,21 @@ docker run -d --name peer0 \
 --log-driver fluentd --log-opt fluentd-address=localhost:24224 \
 -p 7100:7100 -p 9000:9000  \
 loopchain/looppeer:${TAG} \
+<<<<<<< HEAD:step2/start.sh
+python3 peer.py -o /conf/peer_conf0.json -p 7100 -r radio_station:7102
+
+# Peer 1번에서 이용할 데이타 저장 공간을 만듭니다.
+mkdir -p storage1
+
+# Peer 1번을 띄웁니다.
+docker run -d --name peer1 \
+-v $(pwd)/conf:/conf \
+-v $(pwd)/storage0:/.storage \
+--link radio_station:radio_station \
+--log-driver fluentd --log-opt fluentd-address=localhost:24224 \
+-p 7200:7200 -p 9100:9100  \
+loopchain/looppeer:${TAG} \
+python3 peer.py -o /conf/peer_conf1.json -p 7200 -r radio_station:7102
+=======
 python3 peer.py -o /conf/peer_conf.json  -r radio_station:7102
+>>>>>>> f80739b8d2cc1812885e499931df4f55449a2800:step1/launch_servers.sh
