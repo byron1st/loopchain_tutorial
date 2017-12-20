@@ -30,15 +30,13 @@ Local computer에서 SCORE개발 환경 만들기
    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDu9aZIDq88VzIAStqjswToE+X0nn34jCQ0JELmsQuIjdve4lNSGJlyMmILFJzRnjX5MYqCWoEhSrE6z9kyRKf82hxyJdewNJK15kC8Se+5c19htrJ0cY47wzXQpm9YOPpEAvmYxUMpMLF2Km7MMHF7dhI/1HvMRn/b1Cab8Qkfzg8yzix0SJ35tnLkgVP1OAjxe1Lv/0puhm1eNkVxFKI48DzJ1d5GiDb99Dj6V4kmNcy3Hs9C8Ej4Vq69Jp7qSjKZg9j5F4M+ABq2h1EhyB9kVUTiZVlIFqqOr8f8ymG+YUY3QWx7LmmXlKIa0t9YCIGc5pJKHo1aTwR0wdM9zwhP ...
    ```
 
-   ​
-
 3. Github SCORE 저장소에 SSH public key 내용을 (예:id_tutorial.pub)를 등록합니다.
 
    ![ssh key 등록](./img/reg-sshkey-github.png)
 
    ​
 
-## 2. 환경설정
+## 3. 환경설정
 
 #### 1. Peer 설정 - `channel_manage_data.json `
 
@@ -77,7 +75,7 @@ docker run -d --name peer0 \
 ```
 
 
-## 3. 테스트
+## 4. 테스트
 
 #### 1. Peer 목록 조회
 
