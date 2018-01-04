@@ -27,7 +27,7 @@
 Log level 설정하기
 -------
 ```LOOPCHAIN_LOG_LEVEL```을 이용하세요. 아래증 하나의 String값을 가지면 됩니다. 기본값은 "DEBUG"입니다.
- - 설정할 수 있는 값: "CRITICAL", "ERROR", "INFO", "WARN", "WARNING", "INFO", "DEBUG", "NOTSET"
+ - 설정할 수 있는 값:"ERROR", "INFO", "WARN", "WARNING", "INFO", "DEBUG"
 
 Peer의 외부 IP 설정하기
 -------
@@ -118,12 +118,13 @@ RadioStation은 리더 장애를 파악하기 위해 주기적으로 Peer들에�
 네트워크 상태에 따라서 아래 변수들을 수정해야 할 수 있습니다. 보통의 경우에는 설정할 필요가 없지만 네트워크가 매우 안좋은 상황에는 시도해볼 수 있습니다.
 
  * ```GRPC_TIMEOUT```: gRPC 연결하는 시간의 Timeout 한계치. 단위는 Second.
- * ```GRPC_TIMEOUT_BROADCAST_RETRY```: gRPC로 data를 broadcasting하는 시간의 Timeout 한계치. 단위는 Second. 
+ * ```GRPC_TIMEOUT_BROADCAST_RETRY```: gRPC로 data를 broadcasting하는 시간의 Timeout 한계치. 단위는 Second.
 
 
 Hardware 성능의 문제로 Block에 담기는 Tx 숫자를 조절
 -------
- Blockchain은 검증된 여러 Tx들을 담고 있는 Block들의 연결입니다. 그러나 Hardware와 Network의 제약으로 이를 조절해야 할 경우, 아래의 변수들을 수정해주십시오.
+ Blockchain은 검증된 여러 Tx들을 담고 있는 Block들의 연결입니다. 그러나 Hardware와 Network의 제약으로 이를 조절해야 할 경우, 그리고 Tx의 크기가 너무 크게 될 때, 아래의 변수들을 수정해주십시오. **참고로 한개의 Tx안에 담기는 정보가 3MB 이하로 쓰기를 권장합니다.**
+
 
  * ```MAX_BLOCK_TX_NUM```: 블럭의 담기는 트랜잭션의 최대 갯수
  * ```LEADER_BLOCK_CREATION_LIMIT```: Leader 의 block 생성 갯수. 한 Leader가 이 갯수 이상의 Block을 만들면 다른 Peer로 Leader가 변경.
