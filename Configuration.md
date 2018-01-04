@@ -118,7 +118,7 @@ RadioStation은 리더 장애를 파악하기 위해 주기적으로 Peer들에�
 네트워크 상태에 따라서 아래 변수들을 수정해야 할 수 있습니다. 보통의 경우에는 설정할 필요가 없지만 네트워크가 매우 안좋은 상황에는 시도해볼 수 있습니다.
 
  * ```GRPC_TIMEOUT```: gRPC 연결하는 시간의 Timeout 한계치. 단위는 Second.
- * ```GRPC_TIMEOUT_BROADCAST_RETRY```: gRPC로 data를 broadcasting하는 시간의 Timeout 한계치. 단위는 Second.
+ * ```GRPC_TIMEOUT_BROADCAST_RETRY```: gRPC로 data를 broadcasting하는 시간의 Timeout 한계치. 단위는 Second. 
 
 
 Hardware 성능의 문제로 Block에 담기는 Tx 숫자를 조절
