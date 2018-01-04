@@ -49,4 +49,4 @@ TIP:동적으로 포트를 다르게 할 수도 있습니다.
 1. [1개의 RadioStaion과 1개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step1/)
 2. [1개의 RadioStation과 2개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step2/)
 3. [Local computer에서 SCORE개발 환경 만들기](step3/)
-4. [각종 상황들에 대한 Option 설정](configuration.md)
+4. [각종 상황들에 대한 Option 설정](Configuration.md)
