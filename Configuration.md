@@ -34,9 +34,9 @@ Peer의 외부 IP 설정하기
 
  ```LOOPCHAIN_HOST```에 IP값을 설정해줍니다.
 
- 기본적으로 Peer는 시작할 때, 해당 Peer가 속한 Network에서 local IP를 가지게 됩니다. 외부와 통신하지 않고 내부 Network로만 동작하는 경우에는 문제가 없습니다. 그러나 상황에 따라서 고정된 IP 혹은 외부 IP를 가지고 통신하는 것이 나을 수 있습니다.
+ **기본적으로 Peer는 시작할 때, 해당 Peer가 속한 Network에서 사설 IP(Private IP) 가지고 다른 Peer들과 통신하려고 합니다.** 외부와 통신하지 않고 내부 Network로만 동작하는 경우에는 문제가 없습니다. 그러나 상황에 따라서 공용 IP(Public IP)를 가지고 통신하는 것이 나을 수 있습니다.
 
- 예를 들어, Network를 구성하는 Node들이 기존 인터넷 망을 이용하거나 VPN을 이용해서 통신을 하는 경우, Peer의 IP는 기존 인터넷망이나 VPN에서 접근 가능한 IP여야 합니다. 안타깝게도 Docker상에서는 이런 상황에서 IP를 가져올 수가 없습니다. 그래서 ```LOOPCHAIN_HOST```를 이용합니다.
+ 예를 들어, Network를 구성하는 Node들이 기존 인터넷 망을 이용하거나 VPN을 이용해서 통신을 하는 경우, Peer의 IP는 기존 인터넷망이나 VPN에서 접근 가능한 IP여야 합니다. 안타깝게도 Docker상에서는 이런 상황에서 IP를 가져올 수가 없습니다. 그래서 ```LOOPCHAIN_HOST```를 이용해서 다른 Peer들과 통신을 하기 위해 공유되는 IP를 지정할 수 있습니다.
 
 ```
 {
@@ -44,14 +44,62 @@ Peer의 외부 IP 설정하기
 }
 ```
 
-SCORE불러오는 Repository위치 바꾸기
+SCORE불러오는 Repository URL 바꾸기
 ------
 *  ```DEFAULT_SCORE_HOST```:현재 Blockchain 서비스에서 SCORE를 가져오기 위해 사용할 Git repository의 URL을 설정해주면 됩니다.
 
 
+KeyLoad 설정 방법
+-------
+
+### loopchain Key 구성요소
+loopchain에서는 보안 통신, 트랜잭션 서명등을 위하여 인증서와 키 옵션을 설정해 주어야합니다.
+
+loopchain에서 사용하는 키는 다음과 같습니다.
+
+* Channel 별 서명 키
+    * ecdsa secp256k
+    * X.509 인증서, Publickey
+
+### Channel 별 서명 키 옵션 설정
+
+ loopchain에서는 트랜잭션 생성 및 블록 생성시 각 Peer를 검증하기위하여 공개키 기반 암호화 알고리즘을 통해 인증 서명을 사용합니다.이때 사용하는 알고리즘은 ecdsa secp256k를 사용하고 인증서 형태와 Publickey 형태를 지원합니다.
+
+ loopchain Peer는 키를 로드 하기 위해 공개키의 형태와(cert, publickey), 키세트 로드방식 키 위치등을 설정하여야 합니다. json형태로 옵션을 설정해야하며 다음 예제는 키 옵션별로 세팅해야될 세팅을 설명.
+
+    ex)
+    * channel1 = key_file을 통해 load한다면 아래와 같이 해준다.
+
+```json
+{
+    "CHANNEL_OPTION" : {
+        "channel1" : {
+            "load_cert" : false,
+            "consensus_cert_use" : false,
+            "tx_cert_use" : false,
+            "key_load_type": 0,
+            "public_path" : "{public_key path}",
+            "private_path" : "{private_key path}",
+            "private_password" : "{private_key password}"
+        }
+    }
+}
+
+```
+ 각 Parameter들의 내용들은 다음과 같습니다.
+  * ```load_cert``` :load할 인증서의 type 이 cert 면 true, publickey 면 false
+  * ```consensus_cert_use```: block 및 투표 서명에 사용할 공개키 타입 (true : cert false : publickey)
+  * ```tx_cert_use``` : Transaction서명 및 검증에 사용할 공개키 타입 (true : cert false : publickey)
+  * ```key_load_type``` : 0 (File에서 읽음)
+  * ```public_path``` : Public key가 있는 위치
+  * ```private_path``` : Private key가 있는 위치
+  * ```private_password``` : Private key의 Password.
+
+
+
 RESTful응답의 성능 높이기
 -----
-* ```USE_GUNICORN_HA_SERVER``` : 실제 운영단계에 들어가는 Node가 많은 RESTful API에 대한 Request들을 잘 받을 수 있게 gunicorn web service에서 쓸지 말지 결정해주는 변수입니다. 기본값은 False입니다. *실제 서비스에 올릴 때는 반드시 True로 설정되어야 합니다.* 
+* ```USE_GUNICORN_HA_SERVER``` : 실제 운영단계에 들어가는 Node가 많은 RESTful API에 대한 Request들을 잘 받을 수 있게 gunicorn web service에서 쓸지 말지 결정해주는 변수입니다. 기본값은 False입니다. *실제 서비스에 올릴 때는 반드시 True로 설정되어야 합니다.*
 
 Network가 느릴 경우 조절해야 하는 것들
 -------
