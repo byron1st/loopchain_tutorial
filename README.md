@@ -39,10 +39,14 @@ Docker image들은 크게 3가지로 나뉩니다.
 
 TIP:동적으로 포트를 다르게 할 수도 있습니다.
 
+### 최소 Node수
+**제대로된 Blockchain network를 구성하기 위해서 약 4개 이상의 Node들을 띄우셔야 합니다.** 여기 예제들에서 1개 혹은 2개만 띄운것은 일종의 예제로 보시면 됩니다.
+
 
 목차
 -----
 
-1. [1개의 RadioStaion과 1개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step1/README.md)
-2. [1개의 RadioStation과 2개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step2/README.md)
-3. [Local computer에서 SCORE개발 환경 만들기](step3/README.md)
+1. [1개의 RadioStaion과 1개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step1/)
+2. [1개의 RadioStation과 2개의 Peer로 한 장비 위에서 Blockchain network 구성하기](step2/)
+3. [Local computer에서 SCORE개발 환경 만들기](step3/)
+4. [각종 상황들에 대한 Option 설정](Configuration.md)
