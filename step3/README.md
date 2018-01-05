@@ -201,7 +201,7 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"jsonrpc":"2.0","method"
 #### 5. SCORE Transaction 조회 - `tx_hash` 사용 
 
 ```bash
-$ curl http://localhost:9000/api/v1/transactions/result?hash=6f02e79ee73b248b78f156180906cfbea5af2755d90cb3f03fe4f9d16d94eaf3 | python -m json.tool
+$ curl http://localhost:9000/api/v1/transactions?hash=6f02e79ee73b248b78f156180906cfbea5af2755d90cb3f03fe4f9d16d94eaf3 | python -m json.tool
 
 // 결과
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
