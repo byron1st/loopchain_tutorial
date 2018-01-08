@@ -30,15 +30,13 @@ Local computer에서 SCORE개발 환경 만들기
    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDu9aZIDq88VzIAStqjswToE+X0nn34jCQ0JELmsQuIjdve4lNSGJlyMmILFJzRnjX5MYqCWoEhSrE6z9kyRKf82hxyJdewNJK15kC8Se+5c19htrJ0cY47wzXQpm9YOPpEAvmYxUMpMLF2Km7MMHF7dhI/1HvMRn/b1Cab8Qkfzg8yzix0SJ35tnLkgVP1OAjxe1Lv/0puhm1eNkVxFKI48DzJ1d5GiDb99Dj6V4kmNcy3Hs9C8Ej4Vq69Jp7qSjKZg9j5F4M+ABq2h1EhyB9kVUTiZVlIFqqOr8f8ymG+YUY3QWx7LmmXlKIa0t9YCIGc5pJKHo1aTwR0wdM9zwhP ...
    ```
 
-   ​
-
 3. Github SCORE 저장소에 SSH public key 내용을 (예:id_tutorial.pub)를 등록합니다.
 
    ![ssh key 등록](./img/reg-sshkey-github.png)
 
    ​
 
-## 2. 환경설정
+## 3. 환경설정
 
 #### 1. Peer 설정 - `channel_manage_data.json `
 
@@ -77,7 +75,7 @@ docker run -d --name peer0 \
 ```
 
 
-## 3. 테스트
+## 4. 테스트
 
 #### 1. Peer 목록 조회
 
@@ -203,7 +201,7 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"jsonrpc":"2.0","method"
 #### 5. SCORE Transaction 조회 - `tx_hash` 사용 
 
 ```bash
-$ curl http://localhost:9000/api/v1/transactions/result?hash=6f02e79ee73b248b78f156180906cfbea5af2755d90cb3f03fe4f9d16d94eaf3 | python -m json.tool
+$ curl http://localhost:9000/api/v1/transactions?hash=6f02e79ee73b248b78f156180906cfbea5af2755d90cb3f03fe4f9d16d94eaf3 | python -m json.tool
 
 // 결과
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -217,46 +215,3 @@ $ curl http://localhost:9000/api/v1/transactions/result?hash=6f02e79ee73b248b78f
     "response_code": "0"
 }
 ```
-
-```bash
-$ curl http://localhost:9002/api/v1/peer/list | python -m json.tool
-% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   855  100   855    0     0  13609      0 --:--:-- --:--:-- --:--:-- 13790
-{
-    "data": {
-        "connected_peer_count": 1,
-        "connected_peer_list": [
-            {
-                "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==",
-                "group_id": "c9850196-e559-11e7-bf35-0242ac110004",
-                "order": 1,
-                "peer_id": "c9850196-e559-11e7-bf35-0242ac110004",
-                "peer_type": 1,
-                "status": 1,
-                "status_update_time": "2017-12-20 07:46:09.483471",
-                "target": "172.17.0.4:7100"
-            }
-        ],
-        "registered_peer_count": 1,
-        "registered_peer_list": [
-            {
-                "cert": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+HQPBowjyJnyinsYjiztl5i6hQ1JiWdpRmyFR1T283M4liQia7weerQQ4Qw6jDVwd+RkwHeenvR0xxovUFCTQg==",
-                "group_id": "c9850196-e559-11e7-bf35-0242ac110004",
-                "order": 1,
-                "peer_id": "c9850196-e559-11e7-bf35-0242ac110004",
-                "peer_type": 1,
-                "status": 1,
-                "status_update_time": "2017-12-20 07:46:09.483471",
-                "target": "172.17.0.4:7100"
-            }
-        ]
-    },
-    "response_code": 0
-}
-
-$ curl http://localhost:9000/api/v1/status/peer | python -m json.tool
-```
-
-1. Peer 상태확인
-
