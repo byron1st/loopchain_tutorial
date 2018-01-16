@@ -89,7 +89,7 @@ $ mv fluent.conf ./fluentd/etc
 $ mkdir conf
 ```
 
-### 3. Peer들이 실행할 SmartContract 지정 환경설정 생성(`channel_manager_data.json`)
+### 3. Peer들에 Channel을 설정하고 해당 Channel에서 실행할 SmartContract를 지정(`channel_manage_data.json`)
 
 ```
 $ touch channel_manage_data.json
