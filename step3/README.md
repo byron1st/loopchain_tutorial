@@ -215,3 +215,39 @@ $ curl http://localhost:9000/api/v1/transactions?hash=6f02e79ee73b248b78f1561809
     "response_code": "0"
 }
 ```
+
+#### 6. SCORE Transaction 실행 결과 조회 (Query)
+
+```bash
+$ curl -H "Content-Type: application/json" -X POST -d '{"jsonrpc": "2.0","channel":"channel1","method":"get_user_contracts","id":"test_query","params":{"user_id":"leasor"}}' http://localhost:9000/api/v1/query | python -m json.tool
+
+// 결과
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   597  100   480  100   117   7453   1816 --:--:-- --:--:-- --:--:--  7500
+{
+    "response": {
+        "code": 0,
+        "id": "test_query",
+        "jsonrpc": "2.0",
+        "response": {
+            "user_contracts": [
+                {
+                    "approvers": [
+                        "RealEstateAgent"
+                    ],
+                    "content": "A\uc544\ud30c\ud2b8 203\ub3d9 803\ud638\ub97c \ubcf4\uc99d\uae08 1500 \uc6d4\uc138 70\uc5d0 \uacc4\uc57d 2019\ub144 8\uc6d4 1\uc77c\uae4c\uc9c0 \uc784\ub300\ud568, \uc784\ub300 \ucde8\uc18c\uc2dc ~~~ ",
+                    "contract_id": 1,
+                    "counterparties": [
+                        "leaseholder",
+                        "lessor"
+                    ],
+                    "proposer": "RealEstateAgent",
+                    "quorum": "3"
+                }
+            ]
+        }
+    },
+    "response_code": "0"
+}
+```
